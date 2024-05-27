@@ -20,13 +20,14 @@ class Processor:
         filenames = [(cv2.imread(os.path.join(self._in, file)),file) for file in os.listdir(self._in) if any(file.endswith(f"*.{extension}") for extension in "jpg png".split())]
         min_size = min(min([min(image.shape[:2]) for image, _ in filenames]), float('inf'))
         num_x = num_y = (min_size // self._crops)
-        cat_name, cat_dir = self.get_category()
+
 
         """
             1. crop images into smaller fragments
             2. greyscale 'em
         """
         for image, file in filenames:
+            cat_name, cat_dir = self.get_category(file)
             image = cv2.imread(os.path.join(self._in, file))
             makedir(cat_dir)
 
@@ -79,7 +80,7 @@ class Processor:
 
 if __name__ == "__main__":
     from shutil import rmtree
-    rmtree("data\out")
+    rmtree(r"data\out")
     os.makedirs(r"data\out")
     proc = Processor(r"data\in", r"data\out", 128)
     proc.crop_textures()
